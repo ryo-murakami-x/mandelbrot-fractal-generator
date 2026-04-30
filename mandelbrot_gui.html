@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mandelbrot Set Fractal Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .display-area {
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 600px;
+        }
+        
+        .display-area img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .display-area.empty {
+            color: #999;
+            font-size: 1.2em;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .control-group {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .control-group h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .progress-bar {
+            display: none;
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-bar.active {
+            display: block;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            animation: progress 2s infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 100%; }
+            100% { width: 0%; }
+        }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 4px;
+            display: none;
+            font-size: 0.95em;
+        }
+        
+        .status-message.show {
+            display: block;
+        }
+        
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .preset-btn {
+            padding: 10px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            color: #555;
+            transition: all 0.3s;
+        }
+        
+        .preset-btn:hover {
+            border-color: #667eea;
+            background: #f5f5ff;
+        }
+        
+        .preset-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .display-area {
+                min-height: 400px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Mandelbrot Set Fractal Generator</h1>
+            <p>Explore the infinite beauty of mathematical fractals</p>
+        </div>
+        
+        <div class="content">
+            <div class="display-area empty" id="displayArea">
+                Click "Generate Fractal" to create an image
+            </div>
+            
+            <div class="controls">
+                <!-- Preset Regions -->
+                <div class="control-group">
+                    <h3>📍 Preset Regions</h3>
+                    <div class="preset-buttons">
+                        <button class="preset-btn active" onclick="selectPreset(0)">Standard</button>
+                        <button class="preset-btn" onclick="selectPreset(1)">Spiral</button>
+                        <button class="preset-btn" onclick="selectPreset(2)">Deep Zoom</button>
+                        <button class="preset-btn" onclick="selectPreset(3)">Very Deep</button>
+                        <button class="preset-btn" onclick="selectPreset(4)">Seahorse</button>
+                        <button class="preset-btn" onclick="selectPreset(5)">Mini Set</button>
+                    </div>
+                </div>
+                
+                <!-- Resolution -->
+                <div class="control-group">
+                    <h3>📐 Resolution</h3>
+                    <div class="form-group">
+                        <label>Width (px)</label>
+                        <input type="number" id="width" value="1920" min="320" max="4096" step="160">
+                    </div>
+                    <div class="form-group">
+                        <label>Height (px)</label>
+                        <input type="number" id="height" value="1440" min="240" max="3072" step="120">
+                    </div>
+                </div>
+                
+                <!-- Fractal Parameters -->
+                <div class="control-group">
+                    <h3>⚙️ Parameters</h3>
+                    <div class="form-group">
+                        <label>Zoom Level</label>
+                        <input type="number" id="zoom" value="1" min="0.1" max="100000" step="1" style="background: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>Center X</label>
+                        <input type="number" id="centerReal" value="-0.7" min="-3" max="2" step="0.01" style="background: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>Center Y</label>
+                        <input type="number" id="centerImag" value="0" min="-2" max="2" step="0.01" style="background: white;">
+                    </div>
+                    <div class="form-group">
+                        <label>Max Iterations</label>
+                        <input type="number" id="iterations" value="256" min="16" max="4096" step="16">
+                    </div>
+                </div>
+                
+                <!-- Status -->
+                <div id="statusMessage" class="status-message"></div>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                
+                <!-- Buttons -->
+                <div class="button-group">
+                    <button class="btn-primary" onclick="generateFractal()">Generate Fractal</button>
+                    <button class="btn-secondary" onclick="resetControls()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const presets = [
+            { name: "Standard", centerReal: -0.7, centerImag: 0.0, zoom: 1.0, iterations: 256 },
+            { name: "Spiral", centerReal: -0.8, centerImag: -0.156, zoom: 50.0, iterations: 512 },
+            { name: "Deep Zoom", centerReal: -0.747, centerImag: 0.1107, zoom: 100.0, iterations: 512 },
+            { name: "Very Deep", centerReal: -0.7469, centerImag: 0.1102, zoom: 1000.0, iterations: 1024 },
+            { name: "Seahorse", centerReal: -0.75, centerImag: 0.1, zoom: 200.0, iterations: 768 },
+            { name: "Mini Set", centerReal: -0.16, centerImag: 1.036, zoom: 1000.0, iterations: 1024 }
+        ];
+        
+        let currentPreset = 0;
+        
+        function selectPreset(index) {
+            currentPreset = index;
+            const preset = presets[index];
+            
+            document.getElementById('zoom').value = preset.zoom;
+            document.getElementById('centerReal').value = preset.centerReal;
+            document.getElementById('centerImag').value = preset.centerImag;
+            document.getElementById('iterations').value = preset.iterations;
+            
+            document.querySelectorAll('.preset-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === index);
+            });
+            
+            showStatus(`Preset: ${preset.name} loaded`, 'info');
+        }
+        
+        function resetControls() {
+            selectPreset(0);
+            document.getElementById('width').value = 1920;
+            document.getElementById('height').value = 1440;
+            showStatus('Controls reset to default', 'info');
+        }
+        
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message show ${type}`;
+            
+            if (type === 'info') {
+                setTimeout(() => statusEl.classList.remove('show'), 3000);
+            }
+        }
+        
+        function generateFractal() {
+            const btn = event.target;
+            btn.disabled = true;
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.classList.add('active');
+            
+            showStatus('Generating fractal... This may take a moment', 'info');
+            
+            const params = {
+                width: parseInt(document.getElementById('width').value),
+                height: parseInt(document.getElementById('height').value),
+                zoom: parseFloat(document.getElementById('zoom').value),
+                centerReal: parseFloat(document.getElementById('centerReal').value),
+                centerImag: parseFloat(document.getElementById('centerImag').value),
+                iterations: parseInt(document.getElementById('iterations').value)
+            };
+            
+            // Build the API URL with query parameters
+            const queryString = new URLSearchParams(params).toString();
+            const apiUrl = `/api/generate?${queryString}`;
+            
+            const displayArea = document.getElementById('displayArea');
+            
+            // Call the API to generate the fractal
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    progressBar.classList.remove('active');
+                    btn.disabled = false;
+                    
+                    if (data.success) {
+                        const summary = `Generated: ${params.width}×${params.height}, ` +
+                            `Zoom: ${params.zoom}x, Center: (${params.centerReal.toFixed(4)}, ${params.centerImag.toFixed(4)}), ` +
+                            `Iterations: ${params.iterations}`;
+                        
+                        showStatus('✓ Fractal generated successfully!', 'success');
+                        
+                        // Load the generated image with cache busting
+                        const img = new Image();
+                        img.onload = () => {
+                            displayArea.innerHTML = '';
+                            displayArea.classList.remove('empty');
+                            displayArea.appendChild(img);
+                        };
+                        img.onerror = () => {
+                            showStatus('Error: Could not load generated image', 'error');
+                            displayArea.innerHTML = '⚠️ Image generated but failed to load';
+                            displayArea.classList.add('empty');
+                        };
+                        img.src = data.image_url + '?t=' + Date.now();
+                    } else {
+                        showStatus('✗ Error: ' + (data.message || 'Unknown error'), 'error');
+                        displayArea.innerHTML = '❌ Failed to generate fractal';
+                        displayArea.classList.add('empty');
+                    }
+                })
+                .catch(error => {
+                    progressBar.classList.remove('active');
+                    btn.disabled = false;
+                    showStatus('✗ Error: ' + error.message, 'error');
+                    displayArea.innerHTML = '❌ Failed to generate fractal';
+                    displayArea.classList.add('empty');
+                    console.error('Error:', error);
+                });
+        }
+        
+        // Load default image on page load
+        window.addEventListener('load', () => {
+            const img = new Image();
+            img.onload = () => {
+                const displayArea = document.getElementById('displayArea');
+                displayArea.innerHTML = '';
+                displayArea.classList.remove('empty');
+                displayArea.appendChild(img);
+            };
+            img.onerror = () => {
+                // If default image doesn't exist, just show the placeholder
+                console.log('Default image not available');
+            };
+            img.src = '/images/mandelbrot_standard.png';
+        });
+    </script>
+</body>
+</html>
