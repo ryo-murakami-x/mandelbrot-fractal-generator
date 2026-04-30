@@ -167,7 +167,7 @@ After your first release, you can add badges to README.md:
      ## Quick Start
      1. Run: install.sh (macOS/Linux) or install.bat (Windows)
      2. Run: python3 mandelbrot_server.py
-     3. Open: http://localhost:8081
+     3. Open: http://localhost:8080
      ```
 4. Click **Publish release**
 

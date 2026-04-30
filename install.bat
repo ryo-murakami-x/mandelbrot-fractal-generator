@@ -154,7 +154,7 @@ echo 1. Start the web server:
 echo    python mandelbrot_server.py
 echo.
 echo 2. Open your browser to:
-echo    http://localhost:8081
+echo    http://localhost:8080
 echo.
 echo 3. Or use the convenience script:
 echo    run_gui.sh

@@ -34,7 +34,7 @@ bash install.sh
 python3 mandelbrot_server.py
 ```
 
-Then open your browser: **http://localhost:8081**
+Then open your browser: **http://localhost:8080**
 
 ### Without Installation Scripts
 
@@ -53,7 +53,7 @@ cd ..
 python3 mandelbrot_server.py  # python on Windows
 ```
 
-Open: **http://localhost:8081**
+Open: **http://localhost:8080**
 
 ## 📋 System Requirements
 
@@ -86,7 +86,7 @@ See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions for each 
 
 2. **Open browser:**
    ```
-   http://localhost:8081
+   http://localhost:8080
    ```
 
 3. **Generate fractals:**
@@ -196,7 +196,7 @@ python3 mandelbrot_server.py --port 9000
 
 ### Access
 
-- **URL:** http://localhost:8081
+- **URL:** http://localhost:8080
 - **Stop:** Press Ctrl+C
 
 ### Generated Files
@@ -301,7 +301,7 @@ A: Increase width/height in web GUI or modify `example_usage.cpp` for CLI.
 
 1. **Install:** Run `install.sh` (macOS/Linux) or `install.bat` (Windows)
 2. **Start:** Run `python3 mandelbrot_server.py`
-3. **Open:** Visit http://localhost:8081
+3. **Open:** Visit http://localhost:8080
 4. **Explore:** Click preset buttons or adjust parameters
 5. **Enjoy:** Beautiful fractals! 🎨
 

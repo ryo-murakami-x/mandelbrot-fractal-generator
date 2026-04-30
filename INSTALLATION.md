@@ -14,7 +14,7 @@ install.bat
 bash install.sh
 ```
 
-Then open your browser to **http://localhost:8081**
+Then open your browser to **http://localhost:8080**
 
 ---
 
@@ -173,7 +173,7 @@ python mandelbrot_server.py
 python3 mandelbrot_server.py
 ```
 
-Then open: **http://localhost:8081**
+Then open: **http://localhost:8080**
 
 ---
 
@@ -196,9 +196,9 @@ Then open: **http://localhost:8081**
 - macOS: Run `xcode-select --install`
 - Linux: Run `sudo apt-get install build-essential` (Ubuntu) or `sudo dnf groupinstall "Development Tools"` (Fedora)
 
-### Problem: "Port 8081 already in use"
+### Problem: "Port 8080 already in use"
 **Solution:**
-- The app will try port 8082, 8083, etc. automatically
+- The app will try port 8081, 8082, etc. automatically
 - Or kill the process using that port
 - Or specify a custom port: `python mandelbrot_server.py --port 9000`
 
@@ -214,7 +214,7 @@ bash install.sh
 ## First Run
 
 1. **Build and run** using the automated scripts or manual steps above
-2. **Open your browser** to: http://localhost:8081
+2. **Open your browser** to: http://localhost:8080
 3. **Click "Generate Fractal"** to create your first image
 4. **Explore presets** like "Deep Zoom" or "Spiral"
 5. **Enjoy!** 🎨

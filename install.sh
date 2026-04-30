@@ -191,7 +191,7 @@ main() {
     echo -e "   ${YELLOW}python3 mandelbrot_server.py${NC}"
     echo ""
     echo "2. Open your browser to:"
-    echo -e "   ${YELLOW}http://localhost:8081${NC}"
+    echo -e "   ${YELLOW}http://localhost:8080${NC}"
     echo ""
     echo "3. Or use the convenience script:"
     echo -e "   ${YELLOW}./run_gui.sh${NC}"
